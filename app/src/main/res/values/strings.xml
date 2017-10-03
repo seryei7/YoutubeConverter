@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Youtube Converter</string>
+    <string name="url">Youtube video URL</string>
+    <string name="search">Buscar</string>
+    <string name="fail_url">Wrong URL</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+</resources>
