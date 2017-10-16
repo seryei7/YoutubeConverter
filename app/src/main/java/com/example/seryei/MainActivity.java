@@ -1,3 +1,5 @@
+package com.example.seryei;
+
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
