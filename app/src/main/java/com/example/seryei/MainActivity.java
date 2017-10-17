@@ -11,10 +11,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.seryei.youtubeconverter.R;
+import com.squareup.picasso.Picasso;
 
 import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private static String youtubeLink;
     private LinearLayout audioLayout;
     private LinearLayout videoLayout;
+    private ImageView videoPreview;
+    private Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +38,18 @@ public class MainActivity extends AppCompatActivity {
 
         audioLayout = (LinearLayout) findViewById(R.id.audio);
         videoLayout = (LinearLayout) findViewById(R.id.video);
+        videoPreview = (ImageView) findViewById(R.id.youtube_image);
 
-        Button searchButton = (Button) findViewById(R.id.search_url);
         final EditText youtubeEditText = (EditText) findViewById(R.id.youtube_url_et);
+        searchButton = (Button) findViewById(R.id.search_url);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchButton.setEnabled(false);
+                audioLayout.removeAllViews();
+                videoLayout.removeAllViews();
+                videoPreview.setImageDrawable(null);
                 youtubeLink = youtubeEditText.getText().toString();
                 getYoutubeDownloadUrl(youtubeLink);
             }
@@ -55,14 +64,18 @@ public class MainActivity extends AppCompatActivity {
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
                 if (ytFiles == null) {
                     Toast.makeText(getApplicationContext(), R.string.fail_url, Toast.LENGTH_LONG).show();
+                    searchButton.setEnabled(true);
                     return;
                 }
+
+                Picasso.with(getApplicationContext()).load(vMeta.getHqImageUrl()).into(videoPreview);
 
                 for (int i = 0, itag; i < ytFiles.size(); i++) {
                     itag = ytFiles.keyAt(i);
                     YtFile ytFile = ytFiles.get(itag);
                     addButton(vMeta.getTitle(), ytFile);
                 }
+                searchButton.setEnabled(true);
             }
         }.extract(youtubeLink, true, false);
     }
